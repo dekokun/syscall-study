@@ -23,7 +23,6 @@ func main() {
 	} else {
 		log.Fatal(usage)
 	}
-
 }
 
 
@@ -44,7 +43,6 @@ func client(service string) {
 	result, err := ioutil.ReadAll(conn)
 	dieIfError(err)
 	log.Println(string(result))
-	os.Exit(0)
 }
 
 func server(service string) {
