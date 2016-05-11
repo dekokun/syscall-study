@@ -57,9 +57,9 @@ func server(service string) {
 		if err != nil {
 			continue
 		}
-		daytime := time.Now().String()
+		now := time.Now().String()
 		log.Println("Access come !")
-		conn.Write([]byte(daytime))
+		conn.Write([]byte(now))
 		conn.Close()
 	}
 
