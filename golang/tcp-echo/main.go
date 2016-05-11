@@ -6,13 +6,13 @@ import (
 	"net"
 	"io/ioutil"
 	"time"
+	"log"
 )
 
 func main() {
 	usage := fmt.Sprintf("Usage: $s client|server host:port\n", os.Args[0])
 	if len(os.Args) != 3 {
-		fmt.Fprintf(os.Stderr, usage)
-		os.Exit(1)
+		log.Fatal(usage)
 	}
 	service := os.Args[2]
 
@@ -21,8 +21,7 @@ func main() {
 	} else if os.Args[1] == "server" {
 		server(service)
 	} else {
-		fmt.Fprintf(os.Stderr, usage)
-		os.Exit(1)
+		log.Fatal(usage)
 	}
 
 }
@@ -31,8 +30,7 @@ func main() {
 
 func dieIfError(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		os.Exit(1)
+		log.Fatal("Fatal error: %s", err.Error())
 	}
 }
 
@@ -45,7 +43,7 @@ func client(service string) {
 	dieIfError(err)
 	result, err := ioutil.ReadAll(conn)
 	dieIfError(err)
-	fmt.Println(string(result))
+	log.Println(string(result))
 	os.Exit(0)
 }
 
@@ -60,7 +58,7 @@ func server(service string) {
 			continue
 		}
 		daytime := time.Now().String()
-		fmt.Println("Access come !")
+		log.Println("Access come !")
 		conn.Write([]byte(daytime))
 		conn.Close()
 	}
