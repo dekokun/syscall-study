@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"net"
 	"io/ioutil"
-	"time"
 	"log"
+	"net"
+	"os"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -24,8 +25,6 @@ func main() {
 		log.Fatal(usage)
 	}
 }
-
-
 
 func dieIfError(err error) {
 	if err != nil {
@@ -50,13 +49,15 @@ func server(service string) {
 	dieIfError(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	dieIfError(err)
+	count := 0
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
 			continue
 		}
+		count += 1
 		now := time.Now().String()
-		log.Println("Access come !")
+		log.Println(strconv.Itoa(count) + "Access come !")
 		conn.Write([]byte(now))
 		conn.Close()
 	}
