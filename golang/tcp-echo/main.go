@@ -56,10 +56,14 @@ func server(service string) {
 			continue
 		}
 		count += 1
-		now := time.Now().String()
-		log.Println(strconv.Itoa(count) + "Access come !")
-		conn.Write([]byte(now))
-		conn.Close()
+		go responce(conn, count)
 	}
 
+}
+
+func responce(conn net.Conn, count int) {
+	defer conn.Close()
+	now := time.Now().String()
+	log.Println(strconv.Itoa(count) + " Access come !")
+	conn.Write([]byte(now))
 }
