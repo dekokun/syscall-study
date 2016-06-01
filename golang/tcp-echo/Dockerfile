@@ -7,4 +7,4 @@ RUN go-wrapper download
 RUN go-wrapper install
 
 ENTRYPOINT ["strace"]
-CMD ["go", "run", "main.go", "server", ":8000"]
+CMD ["go", "run", "main.go", "-type=server", "-service=:8000"]
