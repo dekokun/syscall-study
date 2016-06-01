@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -9,20 +8,35 @@ import (
 	"strconv"
 	"time"
 )
+import (
+	"runtime/pprof"
+	"runtime"
+	"flag"
+)
 
 func main() {
-	usage := fmt.Sprintf("Usage: $s client|server host:port\n", os.Args[0])
-	if len(os.Args) != 3 {
-		log.Fatal(usage)
+	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
+	commandtype := flag.String("type", "", "server or client")
+	service := flag.String("service", "", "like :8080")
+	flag.Parse()
+	runtime.SetBlockProfileRate(1)
+	log.Println(*cpuprofile)
+	if *cpuprofile != "" {
+		log.Println("cpuprofiling")
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
 	}
-	service := os.Args[2]
-
-	if os.Args[1] == "client" {
-		client(service)
-	} else if os.Args[1] == "server" {
-		server(service)
+	if *commandtype == "client" {
+		client(*service)
+	} else if *commandtype == "server" {
+		server(*service)
 	} else {
-		log.Fatal(usage)
+		log.Fatal("not exists type: " + *commandtype)
+		log.Fatal(flag.Usage)
 	}
 }
 
@@ -56,7 +70,10 @@ func server(service string) {
 			continue
 		}
 		count += 1
-		go responce(conn, count)
+		responce(conn, count)
+		if count == 10 {
+			return
+		}
 	}
 
 }
