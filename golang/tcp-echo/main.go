@@ -34,7 +34,7 @@ func main() {
 	if *commandtype == "client" {
 		client(*service, *times)
 	} else if *commandtype == "server" {
-		server(*service)
+		server(*service, *times)
 	} else {
 		log.Fatal("not exists type: " + *commandtype)
 		log.Fatal(flag.Usage)
@@ -61,7 +61,7 @@ func client(service string, times int) {
 	}
 }
 
-func server(service string) {
+func server(service string, times int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	dieIfError(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
@@ -74,7 +74,7 @@ func server(service string) {
 		}
 		count += 1
 		responce(conn, count)
-		if count == 10 {
+		if count == times {
 			return
 		}
 	}
