@@ -18,6 +18,7 @@ func main() {
 	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
 	commandtype := flag.String("type", "", "server or client")
 	service := flag.String("service", "", "like :8080")
+	times := flag.Int("times", 1, "client exec times")
 	flag.Parse()
 	runtime.SetBlockProfileRate(1)
 	log.Println(*cpuprofile)
@@ -31,7 +32,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 	if *commandtype == "client" {
-		client(*service)
+		client(*service, *times)
 	} else if *commandtype == "server" {
 		server(*service)
 	} else {
@@ -46,16 +47,18 @@ func dieIfError(err error) {
 	}
 }
 
-func client(service string) {
+func client(service string, times int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	dieIfError(err)
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	dieIfError(err)
-	_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
-	dieIfError(err)
-	result, err := ioutil.ReadAll(conn)
-	dieIfError(err)
-	log.Println(string(result))
+	for i := 0; i < times; i++ {
+		conn, err := net.DialTCP("tcp", nil, tcpAddr)
+		dieIfError(err)
+		_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
+		dieIfError(err)
+		result, err := ioutil.ReadAll(conn)
+		dieIfError(err)
+		log.Println(string(result))
+	}
 }
 
 func server(service string) {
