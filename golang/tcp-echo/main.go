@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
 	commandtype := flag.String("type", "", "server or client")
 	service := flag.String("service", "", "like :8080")
