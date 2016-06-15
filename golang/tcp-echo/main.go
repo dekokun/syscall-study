@@ -83,7 +83,7 @@ func server(service string, times int) {
 			continue
 		}
 		count += 1
-		responce(conn, count)
+		go responce(conn, count)
 		if count == times {
 			return
 		}
