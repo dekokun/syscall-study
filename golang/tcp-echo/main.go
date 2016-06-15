@@ -55,7 +55,6 @@ func client(service string, times int) {
 			if err != nil {
 				log.Fatal("Fatal error: %s", err.Error())
 			}
-			_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
 			if err != nil {
 				log.Fatal("Fatal error: %s", err.Error())
 			}
