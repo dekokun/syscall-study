@@ -42,9 +42,6 @@ func main() {
 	}
 }
 
-func dieIfError(err error) {
-}
-
 func client(service string, times int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {
@@ -99,4 +96,6 @@ func responce(conn net.Conn, count int) {
 		log.Fatal("Fatal error: %s", err.Error())
 	}
 	log.Println(strconv.Itoa(count) + " Access come !")
+
+	time.Sleep(10 * time.Millisecond)
 }
