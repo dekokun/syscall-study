@@ -94,7 +94,7 @@ func server(service string, times int) {
 func responce(conn net.Conn, count int) {
 	defer conn.Close()
 	now := time.Now().String()
-	hoge, err := conn.Write([]byte(now + strconv.Itoa(count)))
+	_, err := conn.Write([]byte(now + strconv.Itoa(count)))
 	if err != nil {
 		log.Fatal("Fatal error: %s", err.Error())
 	}
