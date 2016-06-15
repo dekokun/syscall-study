@@ -42,30 +42,39 @@ func main() {
 }
 
 func dieIfError(err error) {
-	if err != nil {
-		log.Fatal("Fatal error: %s", err.Error())
-	}
 }
 
 func client(service string, times int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
-	dieIfError(err)
+	if err != nil {
+		log.Fatal("Fatal error: %s", err.Error())
+	}
 	for i := 0; i < times; i++ {
 		conn, err := net.DialTCP("tcp", nil, tcpAddr)
-		dieIfError(err)
+		if err != nil {
+			log.Fatal("Fatal error: %s", err.Error())
+		}
 		_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
-		dieIfError(err)
+		if err != nil {
+			log.Fatal("Fatal error: %s", err.Error())
+		}
 		result, err := ioutil.ReadAll(conn)
-		dieIfError(err)
+		if err != nil {
+			log.Fatal("Fatal error: %s", err.Error())
+		}
 		log.Println(string(result))
 	}
 }
 
 func server(service string, times int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", service)
-	dieIfError(err)
+	if err != nil {
+		log.Fatal("Fatal error: %s", err.Error())
+	}
 	listener, err := net.ListenTCP("tcp", tcpAddr)
-	dieIfError(err)
+	if err != nil {
+		log.Fatal("Fatal error: %s", err.Error())
+	}
 	count := 0
 	for {
 		conn, err := listener.Accept()
