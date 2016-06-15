@@ -12,6 +12,7 @@ import (
 	"runtime/pprof"
 	"runtime"
 	"flag"
+	"sync"
 )
 
 func main() {
@@ -47,21 +48,27 @@ func client(service string, times int) {
 	if err != nil {
 		log.Fatal("Fatal error: %s", err.Error())
 	}
+	wg := new(sync.WaitGroup)
 	for i := 0; i < times; i++ {
-		conn, err := net.DialTCP("tcp", nil, tcpAddr)
-		if err != nil {
-			log.Fatal("Fatal error: %s", err.Error())
+		f := func() {
+			conn, err := net.DialTCP("tcp", nil, tcpAddr)
+			if err != nil {
+				log.Fatal("Fatal error: %s", err.Error())
+			}
+			_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
+			if err != nil {
+				log.Fatal("Fatal error: %s", err.Error())
+			}
+			result, err := ioutil.ReadAll(conn)
+			if err != nil {
+				log.Fatal("Fatal error: %s", err.Error())
+			}
+			log.Println(string(result))
 		}
-		_, err = conn.Write([]byte("HEAD / HTTP/1.0\r\n\r\n"))
-		if err != nil {
-			log.Fatal("Fatal error: %s", err.Error())
-		}
-		result, err := ioutil.ReadAll(conn)
-		if err != nil {
-			log.Fatal("Fatal error: %s", err.Error())
-		}
-		log.Println(string(result))
+		wg.Add(1)
+		go f()
 	}
+	wg.Wait()
 }
 
 func server(service string, times int) {
