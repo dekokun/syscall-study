@@ -51,6 +51,7 @@ func client(service string, times int) {
 	wg := new(sync.WaitGroup)
 	for i := 0; i < times; i++ {
 		f := func() {
+			defer wg.Done()
 			conn, err := net.DialTCP("tcp", nil, tcpAddr)
 			if err != nil {
 				log.Fatal("Fatal error: %s", err.Error())
@@ -63,7 +64,6 @@ func client(service string, times int) {
 				log.Fatal("Fatal error: %s", err.Error())
 			}
 			log.Println(string(result))
-			wg.Done()
 		}
 		wg.Add(1)
 		go f()
