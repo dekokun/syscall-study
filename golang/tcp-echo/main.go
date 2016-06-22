@@ -63,6 +63,7 @@ func client(service string, times int) {
 				log.Fatal("Fatal error: %s", err.Error())
 			}
 			log.Println(string(result))
+			wg.Done()
 		}
 		wg.Add(1)
 		go f()
